@@ -1,32 +1,32 @@
 /* eslint-disable camelcase */
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-import HomeCard from './HomeCard';
-import MeetingModal from './MeetingModal';
+import HomeCard from "./HomeCard";
+import MeetingModal from "./MeetingModal";
 // import { useUser } from '@clerk/nextjs';
-import ReactDatePicker from 'react-datepicker';
-import { Input } from './ui/input';
-import axios from 'axios';
-import { IMeeting } from '@/lib/interface';
-import { toast } from 'react-toastify';
-import { apiClient } from '@/lib/utils';
-import Image from 'next/image';
-import { ILabelGroup } from '@/interface';
+import ReactDatePicker from "react-datepicker";
+import { Input } from "./ui/input";
+import axios from "axios";
+import { IMeeting } from "@/lib/interface";
+import { toast } from "react-toastify";
+import { apiClient } from "@/lib/utils";
+import Image from "next/image";
+import { ILabelGroup } from "@/interface";
 
 // ZoomMtg.preLoadWasm();
 // ZoomMtg.prepareWebSDK();
 
 const initialValuesJoinMeet = {
-  meetingId: '',
-  meetingPwd: '',
+  meetingId: "",
+  meetingPwd: "",
 };
 
 const initialValuesScheduledMeet = {
   startTime: new Date(),
-  topic: '',
+  topic: "",
   duration: {
     hour: 1,
     minute: 0,
@@ -40,27 +40,27 @@ function getCustomRedirectUrl(meetingNumber: number, meetingPwd: string) {
 const MeetingTypeList = () => {
   const router = useRouter();
   const [meetingState, setMeetingState] = useState<
-    'isScheduleMeeting' | 'isJoiningMeeting' | 'isInstantMeeting' | undefined
+    "isScheduleMeeting" | "isJoiningMeeting" | "isInstantMeeting" | undefined
   >(undefined);
   const [joinMeetValues, setJoinMeetingVal] = useState(initialValuesJoinMeet);
   const [scheduledMeetingVal, setScheduledMeetingVal] = useState(
-    initialValuesScheduledMeet,
+    initialValuesScheduledMeet
   );
   const [meetingDetail, setMeetingDetail] = useState<IMeeting>();
   const [showAttendanceForm, setShowAttendanceForm] = useState(false);
   const [labelGroups, setLabelGroups] = useState<ILabelGroup[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<ILabelGroup | null>(null);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   async function createScheduledMeeting() {
-    const zoomToken = JSON.parse(localStorage.getItem('zoomToken') || '{}');
+    const zoomToken = JSON.parse(localStorage.getItem("zoomToken") || "{}");
     const accessToken =
-      zoomToken && zoomToken.accessToken ? zoomToken.accessToken : '';
+      zoomToken && zoomToken.accessToken ? zoomToken.accessToken : "";
 
-    const toastId = toast.loading('Creating schedule');
+    const toastId = toast.loading("Creating schedule");
     try {
       const response = await axios.post(
-        'http://localhost:4000/api/v1/users/me/meetings',
+        "http://localhost:4000/api/v1/users/me/meetings",
         {
           topic: scheduledMeetingVal.topic,
           type: 2,
@@ -68,7 +68,7 @@ const MeetingTypeList = () => {
           duration:
             scheduledMeetingVal.duration.hour * 60 +
             scheduledMeetingVal.duration.minute,
-          time_zone: 'UTC',
+          time_zone: "UTC",
           settings: {
             host_video: true,
             participant_video: true,
@@ -78,10 +78,10 @@ const MeetingTypeList = () => {
         },
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
-        },
+        }
       );
 
       const data = response.data;
@@ -94,55 +94,55 @@ const MeetingTypeList = () => {
       setSelectedGroup(null);
       setScheduledMeetingVal(initialValuesScheduledMeet);
       toast.update(toastId, {
-        type: 'success',
-        render: 'Meeting scheduled',
+        type: "success",
+        render: "Meeting scheduled",
         isLoading: false,
         autoClose: 3000,
       });
       return data;
     } catch (error: any) {
       toast.update(toastId, {
-        type: 'error',
-        render: error.response.data.error || 'Gagal membuat meeting',
+        type: "error",
+        render: error.response.data.error || "Gagal membuat meeting",
         isLoading: false,
         autoClose: 3000,
       });
-      console.error('Error creating scheduled meeting:', error);
+      console.error("Error creating scheduled meeting:", error);
       throw error;
     }
   }
 
   async function createInstantMeeting() {
-    const zoomToken = JSON.parse(localStorage.getItem('zoomToken') || '{}');
+    const zoomToken = JSON.parse(localStorage.getItem("zoomToken") || "{}");
     const accessToken =
-      zoomToken && zoomToken.accessToken ? zoomToken.accessToken : '';
+      zoomToken && zoomToken.accessToken ? zoomToken.accessToken : "";
 
     try {
       const response = await axios.post(
-        'http://localhost:4000/api/v1/users/me/meetings',
-        { topic: 'New Meeting', type: 1 },
+        "http://localhost:4000/api/v1/users/me/meetings",
+        { topic: "New Meeting", type: 1 },
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
-        },
+        }
       );
 
       const data = response.data;
       return data;
     } catch (error) {
-      console.error('Error creating instant meeting:', error);
+      console.error("Error creating instant meeting:", error);
       throw error;
     }
   }
 
   async function startInstantMeeting() {
-    const toastId = toast.loading('Creating new meeting');
+    const toastId = toast.loading("Creating new meeting");
     try {
       const meeting = await createInstantMeeting();
       if (!meeting || !meeting.id || !meeting.start_url) {
-        console.error('Failed to create the meeting');
+        console.error("Failed to create the meeting");
         return;
       }
 
@@ -152,12 +152,12 @@ const MeetingTypeList = () => {
 
       const redirectUrl = getCustomRedirectUrl(
         meeting.id,
-        meeting.encrypted_password,
+        meeting.encrypted_password
       );
 
       toast.update(toastId, {
-        type: 'success',
-        render: 'Meeting created',
+        type: "success",
+        render: "Meeting created",
         isLoading: false,
         autoClose: 3000,
       });
@@ -165,12 +165,12 @@ const MeetingTypeList = () => {
       router.push(redirectUrl);
     } catch (error: any) {
       toast.update(toastId, {
-        type: 'error',
-        render: error.response.data.error || 'Gagal membuat meeting',
+        type: "error",
+        render: error.response.data.error || "Gagal membuat meeting",
         isLoading: false,
         autoClose: 3000,
       });
-      console.error('Error starting instant meeting:', error);
+      console.error("Error starting instant meeting:", error);
     }
   }
 
@@ -178,13 +178,13 @@ const MeetingTypeList = () => {
     try {
       const response = await apiClient.post(
         `/api/v1/meeting/${meeting_id}/detections`,
-        { meeting_id, attendances: JSON.stringify(selectedGroup?.members) },
+        { meeting_id, attendances: JSON.stringify(selectedGroup?.members) }
       );
 
       const data = response.data;
       return data;
     } catch (error) {
-      console.error('Error creating instant meeting:', error);
+      console.error("Error creating instant meeting:", error);
       throw error;
     }
   }
@@ -222,7 +222,7 @@ const MeetingTypeList = () => {
   // }
 
   async function getLabelGroups(query: string) {
-    const userData = JSON.parse(localStorage.getItem('user_details') || '{}');
+    const userData = JSON.parse(localStorage.getItem("user_details") || "{}");
 
     if (!userData.account_id) {
       toast.error("Couldn't find your account. Please authorize yourself");
@@ -231,7 +231,7 @@ const MeetingTypeList = () => {
 
     try {
       const response = await apiClient.get(
-        `/api/v1/users/me/label-groups?owner_id=${userData.account_id}${query}`,
+        `/api/v1/users/me/label-groups?owner_id=${userData.account_id}${query}`
       );
 
       const data = response.data;
@@ -239,13 +239,13 @@ const MeetingTypeList = () => {
         setLabelGroups(data);
       }
     } catch (error) {
-      console.error('Error uploading new attendance:', error);
+      console.error("Error uploading new attendance:", error);
       throw error;
     }
   }
 
   function handleSearch() {
-    getLabelGroups(search ? `&name=${search}` : '');
+    getLabelGroups(search ? `&name=${search}` : "");
   }
 
   // if (!user) return <Loader />;
@@ -257,8 +257,8 @@ const MeetingTypeList = () => {
         title="New Meeting"
         description="Start an instant meeting"
         handleClick={() => {
-          setMeetingState('isInstantMeeting');
-          getLabelGroups('');
+          setMeetingState("isInstantMeeting");
+          getLabelGroups("");
           setShowAttendanceForm(true);
         }}
       />
@@ -267,14 +267,14 @@ const MeetingTypeList = () => {
         title="Join Meeting"
         description="via invitation link"
         className="bg-blue-1"
-        handleClick={() => setMeetingState('isJoiningMeeting')}
+        handleClick={() => setMeetingState("isJoiningMeeting")}
       />
       <HomeCard
         img="/icons/schedule.svg"
         title="Schedule Meeting"
         description="Plan your meeting"
         className="bg-purple-1"
-        handleClick={() => setMeetingState('isScheduleMeeting')}
+        handleClick={() => setMeetingState("isScheduleMeeting")}
       />
       {/* <HomeCard
         img="/icons/recordings.svg"
@@ -286,15 +286,15 @@ const MeetingTypeList = () => {
 
       {!meetingDetail ? (
         <MeetingModal
-          isOpen={meetingState === 'isScheduleMeeting'}
+          isOpen={meetingState === "isScheduleMeeting"}
           onClose={() => {
             setMeetingState(undefined);
             // setCbWithRecognition(false);
           }}
           title="Schedule a Meeting"
-          buttonText={'Select Attendances'}
+          buttonText={"Select Attendances"}
           handleClick={() => {
-            getLabelGroups('');
+            getLabelGroups("");
             setShowAttendanceForm(true);
           }}
         >
@@ -421,7 +421,7 @@ const MeetingTypeList = () => {
         </MeetingModal>
       ) : (
         <MeetingModal
-          isOpen={meetingState === 'isScheduleMeeting'}
+          isOpen={meetingState === "isScheduleMeeting"}
           onClose={() => {
             setMeetingState(undefined);
             setMeetingDetail(undefined);
@@ -429,11 +429,11 @@ const MeetingTypeList = () => {
           title="Meeting Created"
           handleClick={() => {
             navigator.clipboard.writeText(
-              `http://localhost:3000/meeting/${meetingDetail?.id}?pwd=${meetingDetail.encrypted_password}`,
+              `http://localhost:3000/meeting/${meetingDetail?.id}?pwd=${meetingDetail.encrypted_password}`
             );
-            toast.success('Link Copied');
+            toast.success("Link Copied");
           }}
-          image={'/icons/checked.svg'}
+          image={"/icons/checked.svg"}
           buttonIcon="/icons/copy.svg"
           className="text-center"
           buttonText="Copy Meeting Link"
@@ -441,17 +441,17 @@ const MeetingTypeList = () => {
       )}
 
       <MeetingModal
-        isOpen={meetingState === 'isJoiningMeeting'}
+        isOpen={meetingState === "isJoiningMeeting"}
         onClose={() => setMeetingState(undefined)}
         title="Type the link here"
         className="text-center"
         buttonText="Join Meeting"
         handleClick={() => {
           if (!joinMeetValues.meetingId || !joinMeetValues.meetingPwd) {
-            toast.error('Please provide meeting id and meeting password');
+            toast.error("Please provide meeting id and meeting password");
           } else {
             router.push(
-              `http://localhost:3000/meeting/${joinMeetValues.meetingId}?pwd=${joinMeetValues.meetingPwd}`,
+              `http://localhost:3000/meeting/${joinMeetValues.meetingId}?pwd=${joinMeetValues.meetingPwd}`
             );
           }
         }}
@@ -506,26 +506,26 @@ const MeetingTypeList = () => {
       {showAttendanceForm && (
         <MeetingModal
           isOpen={
-            meetingState === 'isInstantMeeting' ||
-            meetingState === 'isScheduleMeeting'
+            meetingState === "isInstantMeeting" ||
+            meetingState === "isScheduleMeeting"
           }
           onClose={() => {
             setShowAttendanceForm(false);
             setSelectedGroup(null);
           }}
           title={
-            meetingState === 'isInstantMeeting'
-              ? 'Start an Instant Meeting'
-              : 'Schedule a Meeting'
+            meetingState === "isInstantMeeting"
+              ? "Start an Instant Meeting"
+              : "Schedule a Meeting"
           }
           className="text-center"
           buttonText={
-            meetingState === 'isInstantMeeting'
-              ? 'Start Meeting'
-              : 'Schedule Meeting'
+            meetingState === "isInstantMeeting"
+              ? "Start Meeting"
+              : "Schedule Meeting"
           }
           handleClick={() => {
-            meetingState === 'isInstantMeeting'
+            meetingState === "isInstantMeeting"
               ? startInstantMeeting()
               : createScheduledMeeting();
           }}
@@ -553,8 +553,8 @@ const MeetingTypeList = () => {
                 key={labelGroup.id}
                 className={`my-2 flex items-center gap-2 rounded-md p-2 hover:cursor-pointer ${
                   selectedGroup?.id === labelGroup.id
-                    ? 'bg-emerald-800'
-                    : 'bg-slate-800'
+                    ? "bg-emerald-800"
+                    : "bg-slate-800"
                 }`}
                 onClick={() => setSelectedGroup(labelGroup)}
               >

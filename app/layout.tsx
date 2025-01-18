@@ -1,19 +1,19 @@
-import { ReactNode } from 'react';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { ReactNode } from "react";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 
-import '@stream-io/video-react-sdk/dist/css/styles.css';
-import 'react-datepicker/dist/react-datepicker.css';
-import './globals.css';
-import { Toaster } from '@/components/ui/toaster';
+import "@stream-io/video-react-sdk/dist/css/styles.css";
+import "react-datepicker/dist/react-datepicker.css";
+import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'YOOM',
-  description: 'Video calling App',
+  title: "YOOM",
+  description: "Video calling App",
   icons: {
-    icon: '/icons/logo.svg',
+    icon: "/icons/logo.svg",
   },
 };
 

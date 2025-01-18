@@ -1,21 +1,21 @@
-'use client';
-import { IDetection, IPastMeeting } from '@/lib/interface';
-import { apiClient } from '@/lib/utils';
-import Image from 'next/image';
-import { useParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+"use client";
+import { IDetection, IPastMeeting } from "@/lib/interface";
+import { apiClient } from "@/lib/utils";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function MeetingDetails() {
   const [meeting, setMeeting] = useState<IPastMeeting>();
   const { meetingId } = useParams();
   const [detections, setDetections] = useState<IDetection[]>([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   async function getDetections() {
     try {
       const req = await apiClient.get(
-        `/api/v1/meeting/${meetingId}/detections`,
+        `/api/v1/meeting/${meetingId}/detections`
       );
       const detections = req.data;
       const newDetections = detections.map((detection: any) => ({
@@ -24,7 +24,7 @@ export default function MeetingDetails() {
       }));
       setDetections(newDetections);
     } catch (e) {
-      toast.error('Gagal mengambil data peserta meeting');
+      toast.error("Gagal mengambil data peserta meeting");
       console.log(e);
     }
   }
@@ -36,16 +36,16 @@ export default function MeetingDetails() {
           `http://localhost:4000/api/v1/users/me/meetings/history/${meetingId}`,
           {
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
-          },
+          }
         );
 
         const data = response.data.meeting[0];
         getDetections();
         setMeeting(data);
       } catch (error) {
-        console.error('Error creating instant meeting:', error);
+        console.error("Error creating instant meeting:", error);
         throw error;
       }
     }
@@ -59,11 +59,11 @@ export default function MeetingDetails() {
         <h3>Meeting Details</h3>
         <div className="mt-6 flex items-center justify-between">
           <p>Meeting Topic : </p>
-          <p>{meeting?.topic || ''}</p>
+          <p>{meeting?.topic || ""}</p>
         </div>
         <div className="flex items-center justify-between">
           <p>Meeting Host : </p>
-          <p>{meeting?.host_email || ''}</p>
+          <p>{meeting?.host_email || ""}</p>
         </div>
         <div className="flex items-center justify-between">
           <p>Meeting Start : </p>

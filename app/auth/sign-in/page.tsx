@@ -1,12 +1,12 @@
-import Image from 'next/image';
+import Image from "next/image";
 
 export default function SiginInPage() {
   return (
     <main className="flex h-screen w-full items-center justify-center">
       <div className=" flex h-96 flex-col items-center justify-center rounded-xl bg-white p-28">
         <Image
-          src={'/images/zoom-logo.png'}
-          alt={'zoom logo'}
+          src={"/images/zoom-logo.png"}
+          alt={"zoom logo"}
           width={200}
           height={100}
         />

@@ -1,19 +1,19 @@
-'use client';
-import { useParams, useSearchParams } from 'next/navigation';
-import { ZoomMtg } from '@zoom/meetingsdk';
-import React, { useEffect, useRef, useState } from 'react';
-import { IDetection, IMeeting } from '@/lib/interface';
-import * as faceapi from 'face-api.js';
-import { toast } from 'react-toastify';
-import { apiClient, recognizeFace } from '@/lib/utils';
+"use client";
+import { useParams, useSearchParams } from "next/navigation";
+import { ZoomMtg } from "@zoom/meetingsdk";
+import React, { useEffect, useRef, useState } from "react";
+import { IDetection, IMeeting } from "@/lib/interface";
+import * as faceapi from "face-api.js";
+import { toast } from "react-toastify";
+import { apiClient, recognizeFace } from "@/lib/utils";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:4000';
-const SDK_KEY = process.env.NEXT_PUBLIC_SDK_KEY || '';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:4000";
+const SDK_KEY = process.env.NEXT_PUBLIC_SDK_KEY || "";
 
 export default function MeetingPage() {
   const { id: meetingId }: { id: string } = useParams();
   const params = useSearchParams();
-  const meetingPwd = params.get('pwd');
+  const meetingPwd = params.get("pwd");
   let videoRef: HTMLVideoElement | null = null;
   // let canvasRef: HTMLCanvasElement | null = null;
   const [detections, setDetections] = useState<IDetection[]>([]);
@@ -34,13 +34,13 @@ export default function MeetingPage() {
       const req = await fetch(
         `${BASE_URL}/api/v1/meeting/${meetingId}/jwt-signature`,
         {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             meetingNumber,
             role,
           }),
-        },
+        }
       );
       const res = await req.json();
       const signature = res.signature as string;
@@ -69,10 +69,10 @@ export default function MeetingPage() {
     registrantToken: string;
     zakToken: string;
   }) {
-    document.getElementById('zmmtg-root')!.style.display = 'block';
+    document.getElementById("zmmtg-root")!.style.display = "block";
 
     ZoomMtg.init({
-      leaveUrl: 'http://localhost:3000',
+      leaveUrl: "http://localhost:3000",
       patchJsMedia: true,
       leaveOnPageUnload: true,
       success: (success: unknown) => {
@@ -108,7 +108,7 @@ export default function MeetingPage() {
         role: 1,
       });
       if (!signature) {
-        console.error('Failed to get the meeting signature');
+        console.error("Failed to get the meeting signature");
         return;
       }
       startMeeting({
@@ -116,26 +116,26 @@ export default function MeetingPage() {
         sdkKey: SDK_KEY,
         meetingNumber,
         passWord,
-        userName: 'Your Name',
-        userEmail: 'your-email@example.com',
-        registrantToken: '',
-        zakToken: meeting.start_url.split('zak=')[1] || '',
+        userName: "Your Name",
+        userEmail: "your-email@example.com",
+        registrantToken: "",
+        zakToken: meeting.start_url.split("zak=")[1] || "",
       });
     } catch (error) {
-      console.error('Error starting instant meeting:', error);
+      console.error("Error starting instant meeting:", error);
     }
   }
 
   async function startJoinMeeting() {
     try {
       const meetingNumber = parseInt(meetingId);
-      const passWord = meetingPwd || '';
+      const passWord = meetingPwd || "";
       const signature = await getSignature({
         meetingNumber,
         role: 0,
       });
       if (!signature) {
-        console.error('Failed to get the meeting signature');
+        console.error("Failed to get the meeting signature");
         return;
       }
       startMeeting({
@@ -143,23 +143,23 @@ export default function MeetingPage() {
         sdkKey: SDK_KEY,
         meetingNumber,
         passWord,
-        userName: 'Your Name',
-        userEmail: 'your-email@example.com',
-        registrantToken: '',
-        zakToken: '',
+        userName: "Your Name",
+        userEmail: "your-email@example.com",
+        registrantToken: "",
+        zakToken: "",
       });
     } catch (error) {
-      console.error('Error starting instant meeting:', error);
+      console.error("Error starting instant meeting:", error);
     }
   }
 
   async function getMeetingDetails() {
-    const zoomToken = JSON.parse(localStorage.getItem('zoomToken') || '{}');
+    const zoomToken = JSON.parse(localStorage.getItem("zoomToken") || "{}");
     const accessToken =
-      zoomToken && zoomToken.accessToken ? zoomToken.accessToken : '';
+      zoomToken && zoomToken.accessToken ? zoomToken.accessToken : "";
     try {
       const req = await fetch(`${BASE_URL}/api/v1/meeting/${meetingId}`, {
-        method: 'GET',
+        method: "GET",
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -174,7 +174,7 @@ export default function MeetingPage() {
   async function getDetections() {
     try {
       const req = await apiClient.get(
-        `/api/v1/meeting/${meetingId}/detections`,
+        `/api/v1/meeting/${meetingId}/detections`
       );
       const detections = req.data;
       const newDetections = detections.map((detection: any) => ({
@@ -227,13 +227,13 @@ export default function MeetingPage() {
 
   const loadModels = async () => {
     await faceapi.nets.tinyFaceDetector.loadFromUri(
-      '/models/tiny_face_detector',
+      "/models/tiny_face_detector"
     );
     await faceapi.nets.faceLandmark68Net.loadFromUri(
-      '/models/face_landmark_68',
+      "/models/face_landmark_68"
     );
     await faceapi.nets.faceRecognitionNet.loadFromUri(
-      '/models/face_recognition',
+      "/models/face_recognition"
     );
   };
 
@@ -247,11 +247,11 @@ export default function MeetingPage() {
       if (faceDetection) {
         const newDetections = recognizeFace(
           detectionsRef.current,
-          Array.from(faceDetection.descriptor),
+          Array.from(faceDetection.descriptor)
         );
         setDetections(newDetections);
       } else {
-        console.error('No face detected');
+        console.error("No face detected");
       }
 
       // if (canvasRef) {
@@ -267,25 +267,25 @@ export default function MeetingPage() {
   };
 
   const initFaceDetection = async () => {
-    const toastId = toast.loading('Loading models');
+    const toastId = toast.loading("Loading models");
     try {
       await loadModels();
       toast.update(toastId, {
-        render: 'Models loaded successfully',
-        type: 'success',
+        render: "Models loaded successfully",
+        type: "success",
         isLoading: false,
         autoClose: 3000,
       });
     } catch {
       toast.update(toastId, {
-        render: 'Failed to load models',
-        type: 'error',
+        render: "Failed to load models",
+        type: "error",
         isLoading: false,
         autoClose: 3000,
       });
     }
 
-    videoRef = document.getElementById('main-video-self') as HTMLVideoElement;
+    videoRef = document.getElementById("main-video-self") as HTMLVideoElement;
     if (videoRef) {
       // canvasRef = document.createElement('canvas');
       // canvasRef.style.position = 'absolute';

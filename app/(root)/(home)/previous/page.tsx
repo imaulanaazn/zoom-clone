@@ -1,8 +1,8 @@
-'use client';
-import MeetingCard from '@/components/MeetingCard';
-import { IPastMeeting } from '@/lib/interface';
-import { apiClient } from '@/lib/utils';
-import { useEffect, useState } from 'react';
+"use client";
+import MeetingCard from "@/components/MeetingCard";
+import { IPastMeeting } from "@/lib/interface";
+import { apiClient } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 const PreviousPage = () => {
   const [meetings, setMeetings] = useState<IPastMeeting[]>([]);
@@ -11,18 +11,18 @@ const PreviousPage = () => {
     async function getMeetings() {
       try {
         const response = await apiClient.get(
-          'http://localhost:4000/api/v1/users/me/meetings/history',
+          "http://localhost:4000/api/v1/users/me/meetings/history",
           {
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
-          },
+          }
         );
 
         const data = response.data.meetings;
         setMeetings(data);
       } catch (error) {
-        console.error('Error creating instant meeting:', error);
+        console.error("Error creating instant meeting:", error);
         throw error;
       }
     }
@@ -39,22 +39,22 @@ const PreviousPage = () => {
             <MeetingCard
               key={meeting.id}
               isPreviousMeeting={true}
-              icon={'/icons/previous.svg'}
-              title={meeting.topic || 'No Description'}
+              icon={"/icons/previous.svg"}
+              title={meeting.topic || "No Description"}
               date={
                 new Date(meeting.started_at).toLocaleDateString() ||
                 new Date().getDate().toLocaleString()
               }
               link={`http://localhost:3000/meeting/${meeting.id}?pwd=${meeting.encrypted_password}`}
               buttonIcon1={undefined}
-              buttonText={''}
+              buttonText={""}
               handleClick={() => {}}
               meetingId={meeting.id}
             />
           ))
         ) : (
           <h1 className="text-2xl font-bold text-white">
-            {'No Meeting Found'}
+            {"No Meeting Found"}
           </h1>
         )}
       </div>

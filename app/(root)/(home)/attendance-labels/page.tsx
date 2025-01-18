@@ -1,11 +1,11 @@
-'use client';
-import Image from 'next/image';
-import React, { useEffect, useRef, useState } from 'react';
-import * as faceapi from 'face-api.js';
-import { toast } from 'react-toastify';
-import { apiClient } from '@/lib/utils';
-import MeetingModal from '@/components/MeetingModal';
-import { ILabel, ILabelGroup } from '@/interface';
+"use client";
+import Image from "next/image";
+import React, { useEffect, useRef, useState } from "react";
+import * as faceapi from "face-api.js";
+import { toast } from "react-toastify";
+import { apiClient } from "@/lib/utils";
+import MeetingModal from "@/components/MeetingModal";
+import { ILabel, ILabelGroup } from "@/interface";
 
 export default function Attendance() {
   const [descriptor, setDescriptor] = useState<number[]>([]);
@@ -13,27 +13,27 @@ export default function Attendance() {
   const imageGroupRef = useRef<HTMLImageElement | null>(null);
   const fileRef = useRef(null);
   const fileGroupRef = useRef<HTMLInputElement | null>(null);
-  const [imagePreview, setImagePreview] = useState('');
-  const [imageGroupPreview, setImageGroupPreview] = useState('');
-  const [name, setName] = useState('');
-  const [groupName, setGroupName] = useState('');
+  const [imagePreview, setImagePreview] = useState("");
+  const [imageGroupPreview, setImageGroupPreview] = useState("");
+  const [name, setName] = useState("");
+  const [groupName, setGroupName] = useState("");
   const [labels, setLabels] = useState<ILabel[]>([]);
   const [labelGroups, setLabelGroups] = useState<ILabelGroup[]>([]);
-  const [search, setSearch] = useState('');
-  const [groupSearch, setGroupSearch] = useState('');
+  const [search, setSearch] = useState("");
+  const [groupSearch, setGroupSearch] = useState("");
   const [selectedLabels, setSelectedLabels] = useState<number[]>([]);
   const [updateLabelFormVal, setUpdateLabelFormVal] = useState<ILabel | null>(
-    null,
+    null
   );
   const [updateGroupFormVal, setUpdateGroupFormVal] =
     useState<ILabelGroup | null>(null);
-  const [showModal, setShowModal] = useState('');
+  const [showModal, setShowModal] = useState("");
 
   const toggleLabels = (id: number) => {
     setSelectedLabels((prevSelected) =>
       prevSelected.includes(id)
         ? prevSelected.filter((selectedId) => selectedId !== id)
-        : [...prevSelected, id],
+        : [...prevSelected, id]
     );
   };
 
@@ -46,25 +46,25 @@ export default function Attendance() {
       }
 
       setImagePreview(imgURL);
-      const toastId = toast.loading('Mengekstraksi fitur wajah');
+      const toastId = toast.loading("Mengekstraksi fitur wajah");
       const detections = await faceapi
         .detectSingleFace(
           imageRef.current as faceapi.TNetInput,
-          new faceapi.MtcnnOptions(),
+          new faceapi.MtcnnOptions()
         )
         .withFaceLandmarks()
         .withFaceDescriptor();
 
       if (detections) {
         toast.update(toastId, {
-          type: 'success',
+          type: "success",
           isLoading: false,
           autoClose: 2000,
-          render: 'Fitur wajah berhasil diekstraksi',
+          render: "Fitur wajah berhasil diekstraksi",
         });
         setDescriptor(Array.from(detections.descriptor));
       } else {
-        console.error('Tidak terdeteksi wajah pada gambar yang dimasukkan');
+        console.error("Tidak terdeteksi wajah pada gambar yang dimasukkan");
       }
 
       fileRef.current = file;
@@ -86,54 +86,54 @@ export default function Attendance() {
 
   async function createLabel() {
     if (!fileRef.current || !name) {
-      toast.error('Please upload an image and enter a name.');
+      toast.error("Please upload an image and enter a name.");
       return;
     }
 
     if (!descriptor.length) {
-      toast.error('Pastikan terdapat wajah dalam gambar');
+      toast.error("Pastikan terdapat wajah dalam gambar");
       return;
     }
 
     const userData = getUserData();
 
     const formData = new FormData();
-    formData.append('name', name);
-    formData.append('descriptor', JSON.stringify(descriptor));
-    formData.append('owner_id', userData.account_id);
-    formData.append('image', fileRef.current);
-    const toastId = toast.loading('Menambahkan label baru');
+    formData.append("name", name);
+    formData.append("descriptor", JSON.stringify(descriptor));
+    formData.append("owner_id", userData.account_id);
+    formData.append("image", fileRef.current);
+    const toastId = toast.loading("Menambahkan label baru");
     try {
       const response = await apiClient.post(
-        '/api/v1/users/me/labels',
+        "/api/v1/users/me/labels",
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
-        },
+        }
       );
 
       const data = response.data;
       if (data.id) {
         toast.update(toastId, {
-          type: 'success',
-          render: 'Label baru berhasil ditambahkan',
+          type: "success",
+          render: "Label baru berhasil ditambahkan",
           isLoading: false,
           autoClose: 3000,
         });
         setDescriptor([]);
-        setImagePreview('');
-        setName('');
+        setImagePreview("");
+        setName("");
       }
     } catch (error) {
       toast.update(toastId, {
-        type: 'error',
+        type: "error",
         isLoading: false,
-        render: 'Gagal menambahkan label baru',
+        render: "Gagal menambahkan label baru",
         autoClose: 3000,
       });
-      console.error('Gagal menambahkan label baru:', error);
+      console.error("Gagal menambahkan label baru:", error);
       throw error;
     }
   }
@@ -145,36 +145,36 @@ export default function Attendance() {
     }
 
     if (!name) {
-      toast.error('Pastikan nama label terisi');
+      toast.error("Pastikan nama label terisi");
       return;
     }
 
-    const toastId = toast.loading('Mengubah data');
+    const toastId = toast.loading("Mengubah data");
 
     try {
       const response = await apiClient.put(
         `/api/v1/users/me/labels/${updateLabelFormVal?.id}`,
-        { name },
+        { name }
       );
 
       if (response.data) {
         toast.update(toastId, {
-          type: 'success',
-          render: 'Berhasil mengubah label',
+          type: "success",
+          render: "Berhasil mengubah label",
           isLoading: false,
           autoClose: 3000,
         });
         setUpdateLabelFormVal(null);
-        setName('');
+        setName("");
       }
     } catch (error) {
       toast.update(toastId, {
-        type: 'error',
-        render: 'Gagal mengubah label',
+        type: "error",
+        render: "Gagal mengubah label",
         isLoading: false,
         autoClose: 3000,
       });
-      console.error('Gagal mengubah baru:', error);
+      console.error("Gagal mengubah baru:", error);
     }
   }
 
@@ -184,28 +184,28 @@ export default function Attendance() {
       return;
     }
 
-    const toastId = toast.loading('Menghapus data');
+    const toastId = toast.loading("Menghapus data");
 
     try {
       const response = await apiClient.delete(`/api/v1/users/me/labels/${id}`);
 
       if (response.data) {
         toast.update(toastId, {
-          type: 'success',
-          render: 'Berhasil menghapus label',
+          type: "success",
+          render: "Berhasil menghapus label",
           isLoading: false,
           autoClose: 3000,
         });
-        getLabels('');
+        getLabels("");
       }
     } catch (error) {
       toast.update(toastId, {
-        type: 'error',
-        render: 'Gagal menghapus label',
+        type: "error",
+        render: "Gagal menghapus label",
         isLoading: false,
         autoClose: 3000,
       });
-      console.error('Gagal menghapus baru:', error);
+      console.error("Gagal menghapus baru:", error);
     }
   }
 
@@ -215,35 +215,35 @@ export default function Attendance() {
       return;
     }
 
-    const toastId = toast.loading('Menghapus data');
+    const toastId = toast.loading("Menghapus data");
 
     try {
       const response = await apiClient.delete(
-        `/api/v1/users/me/label-groups/${id}`,
+        `/api/v1/users/me/label-groups/${id}`
       );
 
       if (response.data) {
         toast.update(toastId, {
-          type: 'success',
-          render: 'Berhasil menghapus group label',
+          type: "success",
+          render: "Berhasil menghapus group label",
           isLoading: false,
           autoClose: 3000,
         });
-        getLabelGroups('');
+        getLabelGroups("");
       }
     } catch (error) {
       toast.update(toastId, {
-        type: 'error',
-        render: 'Gagal menghapus group label',
+        type: "error",
+        render: "Gagal menghapus group label",
         isLoading: false,
         autoClose: 3000,
       });
-      console.error('Gagal menghapus group baru:', error);
+      console.error("Gagal menghapus group baru:", error);
     }
   }
 
   async function getLabels(query: string) {
-    const userData = JSON.parse(localStorage.getItem('user_details') || '{}');
+    const userData = JSON.parse(localStorage.getItem("user_details") || "{}");
 
     if (!userData.account_id) {
       toast.error("Couldn't find your account. Please authorize yourself");
@@ -252,19 +252,19 @@ export default function Attendance() {
 
     try {
       const response = await apiClient.get(
-        `/api/v1/users/me/labels?owner_id=${userData.account_id}${query}`,
+        `/api/v1/users/me/labels?owner_id=${userData.account_id}${query}`
       );
 
       const data = response.data;
       setLabels(data);
     } catch (error) {
-      console.error('Error uploading new attendance:', error);
+      console.error("Error uploading new attendance:", error);
       throw error;
     }
   }
 
   async function getLabelGroups(query: string) {
-    const userData = JSON.parse(localStorage.getItem('user_details') || '{}');
+    const userData = JSON.parse(localStorage.getItem("user_details") || "{}");
 
     if (!userData.account_id) {
       toast.error("Couldn't find your account. Please authorize yourself");
@@ -273,7 +273,7 @@ export default function Attendance() {
 
     try {
       const response = await apiClient.get(
-        `/api/v1/users/me/label-groups?owner_id=${userData.account_id}${query}`,
+        `/api/v1/users/me/label-groups?owner_id=${userData.account_id}${query}`
       );
 
       const data = response.data;
@@ -281,7 +281,7 @@ export default function Attendance() {
         setLabelGroups(data);
       }
     } catch (error) {
-      console.error('Error uploading new attendance:', error);
+      console.error("Error uploading new attendance:", error);
       throw error;
     }
   }
@@ -294,31 +294,31 @@ export default function Attendance() {
       !Array.isArray(selectedLabels) ||
       selectedLabels.length === 0
     ) {
-      toast.error('Pastikan nama dan anggota label terisi');
+      toast.error("Pastikan nama dan anggota label terisi");
       return;
     }
 
     const formData = new FormData();
-    formData.append('name', groupName);
-    formData.append('labels', JSON.stringify(selectedLabels));
-    formData.append('owner_id', userData.account_id);
-    const toastId = toast.loading('Mengubah data');
+    formData.append("name", groupName);
+    formData.append("labels", JSON.stringify(selectedLabels));
+    formData.append("owner_id", userData.account_id);
+    const toastId = toast.loading("Mengubah data");
 
     console.log(typeof fileGroupRef.current);
 
     try {
       if (
-        fileGroupRef.current?.type === 'image/jpeg' ||
-        fileGroupRef.current?.type === 'image/jpg' ||
-        fileGroupRef.current?.type === 'image/png'
+        fileGroupRef.current?.type === "image/jpeg" ||
+        fileGroupRef.current?.type === "image/jpg" ||
+        fileGroupRef.current?.type === "image/png"
       ) {
-        formData.append('image', fileGroupRef.current as unknown as File);
+        formData.append("image", fileGroupRef.current as unknown as File);
       } else {
         try {
-          formData.append('image', updateGroupFormVal?.image || '');
+          formData.append("image", updateGroupFormVal?.image || "");
         } catch (error) {
-          console.error('Error fetching image:', error);
-          toast.error('Gagal mengunggah gambar.');
+          console.error("Error fetching image:", error);
+          toast.error("Gagal mengunggah gambar.");
           return;
         }
       }
@@ -328,31 +328,31 @@ export default function Attendance() {
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
-        },
+        }
       );
 
       if (response.data) {
         toast.update(toastId, {
-          type: 'success',
-          render: 'Berhasil mengubah grup label',
+          type: "success",
+          render: "Berhasil mengubah grup label",
           isLoading: false,
           autoClose: 3000,
         });
-        getLabelGroups('');
-        setImageGroupPreview('');
-        setGroupName('');
+        getLabelGroups("");
+        setImageGroupPreview("");
+        setGroupName("");
         setSelectedLabels([]);
       }
     } catch (error) {
       toast.update(toastId, {
-        type: 'error',
-        render: 'Gagal mengubah grup label',
+        type: "error",
+        render: "Gagal mengubah grup label",
         isLoading: false,
         autoClose: 3000,
       });
-      console.error('Gagal mengubah grup baru:', error);
+      console.error("Gagal mengubah grup baru:", error);
     }
   }
 
@@ -364,59 +364,59 @@ export default function Attendance() {
       !Array.isArray(selectedLabels) ||
       selectedLabels.length === 0
     ) {
-      toast.error('Pastikan nama dan anggota label terisi');
+      toast.error("Pastikan nama dan anggota label terisi");
       return;
     }
 
     const formData = new FormData();
-    formData.append('name', groupName);
-    formData.append('labels', JSON.stringify(selectedLabels));
-    formData.append('owner_id', userData.account_id);
+    formData.append("name", groupName);
+    formData.append("labels", JSON.stringify(selectedLabels));
+    formData.append("owner_id", userData.account_id);
     if (
-      fileGroupRef.current?.type === 'image/jpeg' ||
-      fileGroupRef.current?.type === 'image/jpg' ||
-      fileGroupRef.current?.type === 'image/png'
+      fileGroupRef.current?.type === "image/jpeg" ||
+      fileGroupRef.current?.type === "image/jpg" ||
+      fileGroupRef.current?.type === "image/png"
     ) {
-      formData.append('image', fileGroupRef.current as unknown as File);
+      formData.append("image", fileGroupRef.current as unknown as File);
     }
-    const toastId = toast.loading('Uploading data');
+    const toastId = toast.loading("Uploading data");
 
     try {
       const response = await apiClient.post(
-        '/api/v1/users/me/label-groups',
+        "/api/v1/users/me/label-groups",
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
-        },
+        }
       );
 
       if (response.data) {
         toast.update(toastId, {
-          type: 'success',
-          render: 'Berhasil membuat grup label baru',
+          type: "success",
+          render: "Berhasil membuat grup label baru",
           isLoading: false,
           autoClose: 3000,
         });
-        getLabelGroups('');
-        setImageGroupPreview('');
-        setGroupName('');
+        getLabelGroups("");
+        setImageGroupPreview("");
+        setGroupName("");
         setSelectedLabels([]);
       }
     } catch (error) {
       toast.update(toastId, {
-        type: 'error',
-        render: 'Gagal membuat grup label baru',
+        type: "error",
+        render: "Gagal membuat grup label baru",
         isLoading: false,
         autoClose: 3000,
       });
-      console.error('Gagal membuat grup baru:', error);
+      console.error("Gagal membuat grup baru:", error);
     }
   }
 
   function getUserData() {
-    const userData = JSON.parse(localStorage.getItem('user_details') || '{}');
+    const userData = JSON.parse(localStorage.getItem("user_details") || "{}");
 
     if (!userData.account_id) {
       toast.error("Couldn't find your account. Please authorize yourself");
@@ -427,15 +427,15 @@ export default function Attendance() {
   }
 
   function handleLabelSearch() {
-    getLabels(search ? `&name=${search}` : '');
+    getLabels(search ? `&name=${search}` : "");
   }
 
   function handleGroupSearch() {
-    getLabelGroups(groupSearch ? `&name=${groupSearch}` : '');
+    getLabelGroups(groupSearch ? `&name=${groupSearch}` : "");
   }
 
   function showUpdateGroupForm(group: ILabelGroup) {
-    setShowModal('update-group-modal');
+    setShowModal("update-group-modal");
     setUpdateGroupFormVal(group);
     if (group) {
       setImageGroupPreview(`http://localhost:4000/uploads/${group.image}`);
@@ -445,7 +445,7 @@ export default function Attendance() {
   }
 
   function showUpdateLabelForm(label: ILabel) {
-    setShowModal('update-label-modal');
+    setShowModal("update-label-modal");
     setUpdateLabelFormVal(label);
     if (label) {
       setImagePreview(`http://localhost:4000/uploads/${label.image}`);
@@ -454,24 +454,24 @@ export default function Attendance() {
   }
 
   useEffect(() => {
-    getLabels('');
-    getLabelGroups('');
+    getLabels("");
+    getLabelGroups("");
   }, []);
 
   useEffect(() => {
     const loadModels = async () => {
-      await faceapi.nets.mtcnn.loadFromUri('/models/mtcnn');
+      await faceapi.nets.mtcnn.loadFromUri("/models/mtcnn");
       await faceapi.nets.faceLandmark68Net.loadFromUri(
-        '/models/face_landmark_68',
+        "/models/face_landmark_68"
       );
       await faceapi.nets.faceRecognitionNet.loadFromUri(
-        '/models/face_recognition',
+        "/models/face_recognition"
       );
     };
     toast.promise(loadModels(), {
-      pending: 'Memuat Model',
-      success: 'Model Dimuat',
-      error: 'Gagal Memuat Model',
+      pending: "Memuat Model",
+      success: "Model Dimuat",
+      error: "Gagal Memuat Model",
     });
 
     loadModels();
@@ -486,7 +486,7 @@ export default function Attendance() {
             <button
               className="rounded-md bg-blue-600 px-3 py-1.5"
               onClick={() => {
-                setShowModal('create-label-modal');
+                setShowModal("create-label-modal");
               }}
             >
               Buat Label
@@ -563,8 +563,8 @@ export default function Attendance() {
             <button
               className="rounded-md bg-blue-600 px-3 py-1.5"
               onClick={() => {
-                setShowModal('create-group-modal');
-                getLabels('');
+                setShowModal("create-group-modal");
+                getLabels("");
               }}
             >
               Buat Grup
@@ -634,24 +634,24 @@ export default function Attendance() {
         {!labels.length && <p className="mt-8 text-center">Tidak ada data</p>}
       </div>
 
-      {(showModal === 'create-label-modal' ||
-        showModal === 'update-label-modal') && (
+      {(showModal === "create-label-modal" ||
+        showModal === "update-label-modal") && (
         <MeetingModal
           isOpen={true}
           onClose={() => {
-            setShowModal('');
+            setShowModal("");
           }}
           title={
-            showModal === 'create-label-modal'
-              ? 'Buat Label Baru'
-              : 'Update Label'
+            showModal === "create-label-modal"
+              ? "Buat Label Baru"
+              : "Update Label"
           }
           className="text-center"
           buttonText={
-            showModal === 'create-label-modal' ? 'Buat Label' : 'Perbarui label'
+            showModal === "create-label-modal" ? "Buat Label" : "Perbarui label"
           }
           handleClick={
-            showModal === 'create-label-modal' ? createLabel : updateLabel
+            showModal === "create-label-modal" ? createLabel : updateLabel
           }
         >
           <div className="relative mx-auto aspect-square h-auto w-40 rounded-lg border-2 border-dashed border-white/90 bg-[url('/icons/add-personal.svg')] bg-center bg-no-repeat hover:cursor-pointer hover:brightness-50">
@@ -659,20 +659,20 @@ export default function Attendance() {
               src={imagePreview}
               width={200}
               height={200}
-              alt={''}
+              alt={""}
               ref={imageRef}
-              className={`aspect-square h-auto w-full object-cover object-center ${imagePreview ? 'opacity-100' : 'opacity-0'}`}
+              className={`aspect-square h-auto w-full object-cover object-center ${imagePreview ? "opacity-100" : "opacity-0"}`}
             />
             <input
               type="file"
               className="absolute left-0 top-0 aspect-square h-auto w-40 opacity-0 hover:cursor-pointer"
               accept="image/*"
               ref={fileRef}
-              disabled={showModal === 'update-label-modal'}
+              disabled={showModal === "update-label-modal"}
               onChange={handleFileChange}
             />
           </div>
-          {showModal === 'create-label-modal' && (
+          {showModal === "create-label-modal" && (
             <p className="text-center text-sm font-normal text-orange-400">
               *pastikan terdapat wajah pada gambar
             </p>
@@ -692,23 +692,23 @@ export default function Attendance() {
         </MeetingModal>
       )}
 
-      {(showModal === 'create-group-modal' ||
-        showModal === 'update-group-modal') && (
+      {(showModal === "create-group-modal" ||
+        showModal === "update-group-modal") && (
         <MeetingModal
           isOpen={true}
           onClose={() => {
-            setShowModal('');
+            setShowModal("");
             setSelectedLabels([]);
           }}
           title={
-            showModal === 'create-group-modal' ? 'Buat Grup Baru' : 'Ubah Group'
+            showModal === "create-group-modal" ? "Buat Grup Baru" : "Ubah Group"
           }
           className="text-center"
           buttonText={
-            showModal === 'create-group-modal' ? 'Buat Grup' : 'Ubah Group'
+            showModal === "create-group-modal" ? "Buat Grup" : "Ubah Group"
           }
           handleClick={() => {
-            showModal === 'create-group-modal'
+            showModal === "create-group-modal"
               ? createLabelGroup()
               : updateLabelGroup();
           }}
@@ -719,9 +719,9 @@ export default function Attendance() {
                 src={imageGroupPreview}
                 width={200}
                 height={200}
-                alt={''}
+                alt={""}
                 ref={imageGroupRef}
-                className={`aspect-square h-auto w-20 object-cover object-center ${imageGroupPreview ? 'opacity-100' : 'opacity-0'}`}
+                className={`aspect-square h-auto w-20 object-cover object-center ${imageGroupPreview ? "opacity-100" : "opacity-0"}`}
               />
               <input
                 type="file"
@@ -768,8 +768,8 @@ export default function Attendance() {
                   key={label.id}
                   className={`my-2 flex items-center gap-2 rounded-md p-2 hover:cursor-pointer ${
                     selectedLabels.includes(label.id)
-                      ? 'bg-emerald-800'
-                      : 'bg-slate-800'
+                      ? "bg-emerald-800"
+                      : "bg-slate-800"
                   }`}
                   onClick={() => toggleLabels(label.id)}
                 >

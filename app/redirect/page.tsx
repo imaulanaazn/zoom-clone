@@ -1,6 +1,6 @@
-'use client';
-import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, Suspense } from 'react';
+"use client";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, Suspense } from "react";
 
 export default function Page() {
   return (
@@ -12,14 +12,14 @@ export default function Page() {
 
 function Redirect() {
   const searchParams = useSearchParams();
-  const code = searchParams.get('code');
+  const code = searchParams.get("code");
   const router = useRouter();
 
   useEffect(() => {
     async function getAccessToken() {
       try {
         const response = await fetch(
-          `http://localhost:4000/api/v1/users/me/token?code=${code}`,
+          `http://localhost:4000/api/v1/users/me/token?code=${code}`
         );
 
         if (!response.ok) {
@@ -33,10 +33,10 @@ function Redirect() {
           expires_in: data.expires_in,
         });
 
-        localStorage.setItem('zoomToken', token);
-        router.push('/');
+        localStorage.setItem("zoomToken", token);
+        router.push("/");
       } catch (error) {
-        console.error('Failed to fetch the access token:', error);
+        console.error("Failed to fetch the access token:", error);
       }
     }
 

@@ -1,23 +1,23 @@
 export const sidebarLinks = [
   {
-    imgURL: '/icons/Home.svg',
-    route: '/',
-    label: 'Beranda',
+    imgURL: "/icons/Home.svg",
+    route: "/",
+    label: "Beranda",
   },
   {
-    imgURL: '/icons/upcoming.svg',
-    route: '/upcoming',
-    label: 'Meeting Mendatang',
+    imgURL: "/icons/upcoming.svg",
+    route: "/upcoming",
+    label: "Meeting Mendatang",
   },
   {
-    imgURL: '/icons/previous.svg',
-    route: '/previous',
-    label: 'Meeting Sebelumnya',
+    imgURL: "/icons/previous.svg",
+    route: "/previous",
+    label: "Meeting Sebelumnya",
   },
   {
-    imgURL: '/icons/join-meeting.svg',
-    route: '/attendance-labels',
-    label: 'Data Label',
+    imgURL: "/icons/join-meeting.svg",
+    route: "/attendance-labels",
+    label: "Data Label",
   },
   // },
   // {
@@ -33,9 +33,9 @@ export const sidebarLinks = [
 ];
 
 export const avatarImages = [
-  '/images/avatar-1.jpeg',
-  '/images/avatar-2.jpeg',
-  '/images/avatar-3.png',
-  '/images/avatar-4.png',
-  '/images/avatar-5.png',
+  "/images/avatar-1.jpeg",
+  "/images/avatar-2.jpeg",
+  "/images/avatar-3.png",
+  "/images/avatar-4.png",
+  "/images/avatar-5.png",
 ];

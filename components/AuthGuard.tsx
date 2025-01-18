@@ -1,7 +1,7 @@
-'use client';
-import { apiClient, isTokenExpired, refreshAccessToken } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+"use client";
+import { apiClient, isTokenExpired, refreshAccessToken } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -13,14 +13,14 @@ function AuthGuard({ children }: AuthGuardProps) {
 
   useEffect(() => {
     const checkAuthentication = async () => {
-      const zoomToken = JSON.parse(localStorage.getItem('zoomToken') || '{}');
+      const zoomToken = JSON.parse(localStorage.getItem("zoomToken") || "{}");
       let accessToken =
-        zoomToken && zoomToken.accessToken ? zoomToken.accessToken : '';
+        zoomToken && zoomToken.accessToken ? zoomToken.accessToken : "";
 
       if (!accessToken) {
-        localStorage.removeItem('user_details');
+        localStorage.removeItem("user_details");
         setIsAuthenticated(false);
-        router.push('/auth/sign-in');
+        router.push("/auth/sign-in");
         return;
       }
 
@@ -28,8 +28,8 @@ function AuthGuard({ children }: AuthGuardProps) {
         try {
           accessToken = await refreshAccessToken();
         } catch (error) {
-          window.location.href = '/auth/sign-in';
-          localStorage.removeItem('user_details');
+          window.location.href = "/auth/sign-in";
+          localStorage.removeItem("user_details");
           throw error;
         }
       }
@@ -43,13 +43,13 @@ function AuthGuard({ children }: AuthGuardProps) {
   useEffect(() => {
     async function getUserInfo() {
       try {
-        const response = await apiClient.get('/api/v1/users/me');
+        const response = await apiClient.get("/api/v1/users/me");
         const data = response.data;
         if (data.id) {
-          localStorage.setItem('user_details', JSON.stringify(data));
+          localStorage.setItem("user_details", JSON.stringify(data));
         }
       } catch (error) {
-        console.error('Error getting user details:', error);
+        console.error("Error getting user details:", error);
         throw error;
       }
     }

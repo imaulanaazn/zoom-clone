@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useCall, useCallStateHooks } from '@stream-io/video-react-sdk';
+import { useCall, useCallStateHooks } from "@stream-io/video-react-sdk";
 
-import { Button } from './ui/button';
-import { useRouter } from 'next/navigation';
+import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 const EndCallButton = () => {
   const call = useCall();
@@ -11,7 +11,7 @@ const EndCallButton = () => {
 
   if (!call)
     throw new Error(
-      'useStreamCall must be used within a StreamCall component.',
+      "useStreamCall must be used within a StreamCall component."
     );
 
   // https://getstream.io/video/docs/react/guides/call-and-participant-state/#participant-state-3
@@ -27,7 +27,7 @@ const EndCallButton = () => {
 
   const endCall = async () => {
     await call.endCall();
-    router.push('/');
+    router.push("/");
   };
 
   return (

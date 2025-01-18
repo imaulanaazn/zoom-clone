@@ -7,7 +7,9 @@ import * as faceapi from "face-api.js";
 import { toast } from "react-toastify";
 import { apiClient, recognizeFace } from "@/lib/utils";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:4000";
+const BASE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL ||
+  "https://https://zoomserver-production.up.railway.app";
 const SDK_KEY = process.env.NEXT_PUBLIC_SDK_KEY || "";
 
 export default function MeetingPage() {

@@ -11,7 +11,7 @@ const PreviousPage = () => {
     async function getMeetings() {
       try {
         const response = await apiClient.get(
-          "http://localhost:4000/api/v1/users/me/meetings/history",
+          "https://https://zoomserver-production.up.railway.app/api/v1/users/me/meetings/history",
           {
             headers: {
               "Content-Type": "application/json",

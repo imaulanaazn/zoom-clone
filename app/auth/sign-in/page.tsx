@@ -15,7 +15,7 @@ export default function SiginInPage() {
           Login using your zoom account to continue using this website
         </p>
         <a
-          href="https://zoom.us/oauth/authorize?response_type=code&client_id=OJ6QysNcQLKVN8XkB1DY8A&redirect_uri=http://localhost:3000/redirect"
+          href="https://zoom.us/oauth/authorize?response_type=code&client_id=OJ6QysNcQLKVN8XkB1DY8A&redirect_uri=https://convin-online.vercel.app//redirect"
           className="w-max rounded-md bg-blue-600 px-4 py-2 text-white"
         >
           Authorize

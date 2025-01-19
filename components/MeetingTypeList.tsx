@@ -34,7 +34,7 @@ const initialValuesScheduledMeet = {
 };
 
 function getCustomRedirectUrl(meetingNumber: number, meetingPwd: string) {
-  return `http://localhost:3000/meeting/${meetingNumber}?pwd=${meetingPwd}`;
+  return `https://convin-online.vercel.app//meeting/${meetingNumber}?pwd=${meetingPwd}`;
 }
 
 const MeetingTypeList = () => {
@@ -429,7 +429,7 @@ const MeetingTypeList = () => {
           title="Meeting Created"
           handleClick={() => {
             navigator.clipboard.writeText(
-              `http://localhost:3000/meeting/${meetingDetail?.id}?pwd=${meetingDetail.encrypted_password}`
+              `https://convin-online.vercel.app//meeting/${meetingDetail?.id}?pwd=${meetingDetail.encrypted_password}`
             );
             toast.success("Link Copied");
           }}
@@ -451,7 +451,7 @@ const MeetingTypeList = () => {
             toast.error("Please provide meeting id and meeting password");
           } else {
             router.push(
-              `http://localhost:3000/meeting/${joinMeetValues.meetingId}?pwd=${joinMeetValues.meetingPwd}`
+              `https://convin-online.vercel.app//meeting/${joinMeetValues.meetingId}?pwd=${joinMeetValues.meetingPwd}`
             );
           }
         }}

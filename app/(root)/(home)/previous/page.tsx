@@ -45,7 +45,7 @@ const PreviousPage = () => {
                 new Date(meeting.started_at).toLocaleDateString() ||
                 new Date().getDate().toLocaleString()
               }
-              link={`http://localhost:3000/meeting/${meeting.id}?pwd=${meeting.encrypted_password}`}
+              link={`https://convin-online.vercel.app//meeting/${meeting.id}?pwd=${meeting.encrypted_password}`}
               buttonIcon1={undefined}
               buttonText={""}
               handleClick={() => {}}

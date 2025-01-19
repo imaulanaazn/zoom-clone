@@ -74,7 +74,7 @@ export default function MeetingPage() {
     document.getElementById("zmmtg-root")!.style.display = "block";
 
     ZoomMtg.init({
-      leaveUrl: "http://localhost:3000",
+      leaveUrl: "https://convin-online.vercel.app/",
       patchJsMedia: true,
       leaveOnPageUnload: true,
       success: (success: unknown) => {

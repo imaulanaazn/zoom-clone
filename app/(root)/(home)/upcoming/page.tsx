@@ -19,7 +19,7 @@ const UpcomingPage = () => {
         throw new Error("Invalid Zoom URL: Missing meeting ID or password");
       }
 
-      const customUrl = `http://localhost:3000/meeting/${meetingId}?pwd=${password}`;
+      const customUrl = `https://convin-online.vercel.app//meeting/${meetingId}?pwd=${password}`;
       return customUrl;
     } catch (error: any) {
       console.error("Error converting Zoom URL:", error.message);

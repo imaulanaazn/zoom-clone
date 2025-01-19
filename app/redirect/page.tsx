@@ -19,7 +19,7 @@ function Redirect() {
     async function getAccessToken() {
       try {
         const response = await fetch(
-          `https://https://zoomserver-production.up.railway.app/api/v1/users/me/token?code=${code}`
+          `https://zoomserver-production.up.railway.app/api/v1/users/me/token?code=${code}`
         );
 
         if (!response.ok) {

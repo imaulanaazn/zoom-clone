@@ -60,7 +60,7 @@ const MeetingTypeList = () => {
     const toastId = toast.loading("Creating schedule");
     try {
       const response = await axios.post(
-        "https://https://zoomserver-production.up.railway.app/api/v1/users/me/meetings",
+        "https://zoomserver-production.up.railway.app/api/v1/users/me/meetings",
         {
           topic: scheduledMeetingVal.topic,
           type: 2,
@@ -119,7 +119,7 @@ const MeetingTypeList = () => {
 
     try {
       const response = await axios.post(
-        "https://https://zoomserver-production.up.railway.app/api/v1/users/me/meetings",
+        "https://zoomserver-production.up.railway.app/api/v1/users/me/meetings",
         { topic: "New Meeting", type: 1 },
         {
           headers: {
@@ -561,7 +561,7 @@ const MeetingTypeList = () => {
                 <Image
                   width={50}
                   height={50}
-                  src={`https://https://zoomserver-production.up.railway.app/uploads/${labelGroup.image}`}
+                  src={`https://zoomserver-production.up.railway.app/uploads/${labelGroup.image}`}
                   alt="person profile"
                   className="aspect-square h-auto w-10 rounded-md object-cover"
                 />

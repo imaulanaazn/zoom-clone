@@ -20,7 +20,7 @@ export async function refreshAccessToken() {
 
   try {
     const response = await axios.post(
-      "https://https://zoomserver-production.up.railway.app/api/v1/users/me/oauth/token",
+      "https://zoomserver-production.up.railway.app/api/v1/users/me/oauth/token",
       { refresh_token: refreshToken, grant_type: "refresh_token" }
     );
 

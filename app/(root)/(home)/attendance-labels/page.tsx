@@ -439,7 +439,7 @@ export default function Attendance() {
     setUpdateGroupFormVal(group);
     if (group) {
       setImageGroupPreview(
-        `https://https://zoomserver-production.up.railway.app/uploads/${group.image}`
+        `https://zoomserver-production.up.railway.app/uploads/${group.image}`
       );
       setGroupName(group.name);
       setSelectedLabels(group.members);
@@ -451,7 +451,7 @@ export default function Attendance() {
     setUpdateLabelFormVal(label);
     if (label) {
       setImagePreview(
-        `https://https://zoomserver-production.up.railway.app/uploads/${label.image}`
+        `https://zoomserver-production.up.railway.app/uploads/${label.image}`
       );
       setName(label.name);
     }
@@ -529,7 +529,7 @@ export default function Attendance() {
                 <td className="p-4">{attendance.name}</td>
                 <td className="p-2">
                   <Image
-                    src={`https://https://zoomserver-production.up.railway.app/uploads/${attendance.image}`}
+                    src={`https://zoomserver-production.up.railway.app/uploads/${attendance.image}`}
                     width={100}
                     height={100}
                     alt="user profile"
@@ -607,7 +607,7 @@ export default function Attendance() {
                 <td className="p-4">{group.name}</td>
                 <td className="p-2">
                   <Image
-                    src={`https://https://zoomserver-production.up.railway.app/uploads/${group.image}`}
+                    src={`https://zoomserver-production.up.railway.app/uploads/${group.image}`}
                     width={100}
                     height={100}
                     alt="group profile"
@@ -780,7 +780,7 @@ export default function Attendance() {
                   <Image
                     width={50}
                     height={50}
-                    src={`https://https://zoomserver-production.up.railway.app/uploads/${label.image}`}
+                    src={`https://zoomserver-production.up.railway.app/uploads/${label.image}`}
                     alt="person profile"
                     className="aspect-square h-auto w-10 rounded-md object-cover"
                   />

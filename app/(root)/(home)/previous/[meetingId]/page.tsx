@@ -33,7 +33,7 @@ export default function MeetingDetails() {
     async function getMeetings() {
       try {
         const response = await apiClient.get(
-          `https://https://zoomserver-production.up.railway.app/api/v1/users/me/meetings/history/${meetingId}`,
+          `https://zoomserver-production.up.railway.app/api/v1/users/me/meetings/history/${meetingId}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -112,7 +112,7 @@ export default function MeetingDetails() {
                 <td className="p-4">{detection.name}</td>
                 <td className="p-2">
                   <Image
-                    src={`https://https://zoomserver-production.up.railway.app/uploads/${detection.image}`}
+                    src={`https://zoomserver-production.up.railway.app/uploads/${detection.image}`}
                     width={100}
                     height={100}
                     alt="user profile"

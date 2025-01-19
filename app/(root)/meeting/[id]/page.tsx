@@ -9,7 +9,7 @@ import { apiClient, recognizeFace } from "@/lib/utils";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL ||
-  "https://https://zoomserver-production.up.railway.app";
+  "https://zoomserver-production.up.railway.app";
 const SDK_KEY = process.env.NEXT_PUBLIC_SDK_KEY || "";
 
 export default function MeetingPage() {

@@ -3,11 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 export function middleware(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const cspHeader = `
-    default-src 'self' https://source.zoom.us;
+    default-src 'self' https://source.zoom.us https://zoomserver-production.up.railway.app;
     script-src 'self' 'unsafe-inline' 'unsafe-eval' https://source.zoom.us;
     style-src 'self' 'unsafe-inline' https://source.zoom.us;
     img-src 'self' blob: data:;
     font-src 'self' data:;
+    connect-src 'self' https://zoomserver-production.up.railway.app;
     object-src 'none';
     base-uri 'self';
     form-action 'self';

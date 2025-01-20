@@ -8,10 +8,11 @@ export function middleware(request: NextRequest) {
     style-src 'self' 'unsafe-inline' https://source.zoom.us;
     img-src 'self' blob: data:;
     font-src 'self' data:;
-    connect-src 'self' https://zoomserver-production.up.railway.app;
+    connect-src 'self' https://zoomserver-production.up.railway.app https://www.google.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
+    frame-src 'self' https://www.googletagmanager.com;
     frame-ancestors 'none';
     upgrade-insecure-requests;
 `;

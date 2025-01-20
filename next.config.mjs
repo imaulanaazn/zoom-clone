@@ -9,7 +9,6 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "zoomserver-production.up.railway.app",
-        port: "8080",
       },
       {
         protocol: "http",

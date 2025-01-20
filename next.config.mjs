@@ -17,6 +17,27 @@ const nextConfig = {
       },
     ],
   },
+  async headers() {
+    return [
+      {
+        source: "/:path*", // Matches all routes
+        headers: [
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload", // Enforce HTTPS
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff", // Prevent MIME type sniffing
+          },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin", // Control referrer information
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

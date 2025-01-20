@@ -12,7 +12,7 @@ const Navbar = () => {
           src="/icons/logo.svg"
           width={32}
           height={32}
-          alt="yoom logo"
+          alt="convin logo"
           className="max-sm:size-10"
         />
         <p className="mb-0 text-[26px] font-extrabold text-white max-sm:hidden">

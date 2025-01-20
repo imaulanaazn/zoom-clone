@@ -8,7 +8,7 @@ export function middleware(request: NextRequest) {
     style-src 'self' 'unsafe-inline' https://source.zoom.us;
     img-src 'self' blob: data:;
     font-src 'self' data:;
-    connect-src 'self' https://zoom.us https://file.zoom.us https://*.zoom.us https://*.zoom.cn https://*.zoom.com.cn https://marketplacefront-cf.zoom.us https://zoom-marketplace-apps.s3.amazonaws.com/ https://marketplacecontent-cf.zoom.us/ https://www.google-analytics.com https://*.telemetry.zoom.us https://cdn.cookielaw.org https://zoom-privacy.my.onetrust.com https://geolocation.onetrust.com;
+    connect-src 'self' https://www.google.com https://zoom.us https://file.zoom.us https://*.zoom.us https://*.zoom.cn https://*.zoom.com.cn https://marketplacefront-cf.zoom.us https://zoom-marketplace-apps.s3.amazonaws.com/ https://marketplacecontent-cf.zoom.us/ https://www.google-analytics.com https://*.telemetry.zoom.us https://cdn.cookielaw.org https://zoom-privacy.my.onetrust.com https://geolocation.onetrust.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';

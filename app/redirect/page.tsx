@@ -2,6 +2,8 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, Suspense } from "react";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 export default function Page() {
   return (
     <Suspense>
@@ -19,7 +21,7 @@ function Redirect() {
     async function getAccessToken() {
       try {
         const response = await fetch(
-          `https://zoomserver-production.up.railway.app/api/v1/users/me/token?code=${code}`
+          `${BASE_URL}/api/v1/users/me/token?code=${code}`
         );
 
         if (!response.ok) {

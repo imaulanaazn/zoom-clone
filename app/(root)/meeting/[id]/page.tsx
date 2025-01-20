@@ -2,14 +2,13 @@
 import { useParams, useSearchParams } from "next/navigation";
 import { ZoomMtg } from "@zoom/meetingsdk";
 import React, { useEffect, useRef, useState } from "react";
-import { IDetection, IMeeting } from "@/lib/interface";
 import * as faceapi from "face-api.js";
 import { toast } from "react-toastify";
 import { apiClient, recognizeFace } from "@/lib/utils";
+import { IDetection, IMeeting } from "@/interface";
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL ||
-  "https://zoomserver-production.up.railway.app";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL;
 const SDK_KEY = process.env.NEXT_PUBLIC_SDK_KEY || "";
 
 export default function MeetingPage() {
@@ -74,7 +73,7 @@ export default function MeetingPage() {
     document.getElementById("zmmtg-root")!.style.display = "block";
 
     ZoomMtg.init({
-      leaveUrl: "https://convin-online.vercel.app/",
+      leaveUrl: `${FRONTEND_URL}/`,
       patchJsMedia: true,
       leaveOnPageUnload: true,
       success: (success: unknown) => {
@@ -269,18 +268,18 @@ export default function MeetingPage() {
   };
 
   const initFaceDetection = async () => {
-    const toastId = toast.loading("Loading models");
+    const toastId = toast.loading("Memuat model");
     try {
       await loadModels();
       toast.update(toastId, {
-        render: "Models loaded successfully",
+        render: "Model berhasil dimuat",
         type: "success",
         isLoading: false,
         autoClose: 3000,
       });
     } catch {
       toast.update(toastId, {
-        render: "Failed to load models",
+        render: "Gagal memuat model",
         type: "error",
         isLoading: false,
         autoClose: 3000,
@@ -304,7 +303,7 @@ export default function MeetingPage() {
     const detectionRes = detectionsRef.current.map((detection) => ({
       id: detection.detection_id,
       meeting_id: detection.meeting_id,
-      attendance_id: detection.attendance_id,
+      attendance_id: detection.label_id,
       detection_time: detection.detection_time,
     }));
 

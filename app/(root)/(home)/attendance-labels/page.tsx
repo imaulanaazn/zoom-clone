@@ -7,6 +7,8 @@ import { apiClient } from "@/lib/utils";
 import MeetingModal from "@/components/MeetingModal";
 import { ILabel, ILabelGroup } from "@/interface";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 export default function Attendance() {
   const [descriptor, setDescriptor] = useState<number[]>([]);
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -86,7 +88,7 @@ export default function Attendance() {
 
   async function createLabel() {
     if (!fileRef.current || !name) {
-      toast.error("Please upload an image and enter a name.");
+      toast.error("Tolong gambar wajah dan nama.");
       return;
     }
 
@@ -149,7 +151,7 @@ export default function Attendance() {
       return;
     }
 
-    const toastId = toast.loading("Mengubah data");
+    const toastId = toast.loading("Mengubah data label");
 
     try {
       const response = await apiClient.put(
@@ -205,7 +207,7 @@ export default function Attendance() {
         isLoading: false,
         autoClose: 3000,
       });
-      console.error("Gagal menghapus baru:", error);
+      console.error("Gagal menghapus label:", error);
     }
   }
 
@@ -238,7 +240,7 @@ export default function Attendance() {
         isLoading: false,
         autoClose: 3000,
       });
-      console.error("Gagal menghapus group baru:", error);
+      console.error("Gagal menghapus group label:", error);
     }
   }
 
@@ -246,7 +248,7 @@ export default function Attendance() {
     const userData = JSON.parse(localStorage.getItem("user_details") || "{}");
 
     if (!userData.account_id) {
-      toast.error("Couldn't find your account. Please authorize yourself");
+      toast.error("Akun tidak ditemukan, silahkan login terlebih dahulu");
       return;
     }
 
@@ -267,7 +269,7 @@ export default function Attendance() {
     const userData = JSON.parse(localStorage.getItem("user_details") || "{}");
 
     if (!userData.account_id) {
-      toast.error("Couldn't find your account. Please authorize yourself");
+      toast.error("Akun tidak ditemukan, silahkan login terlebih dahulu");
       return;
     }
 
@@ -303,8 +305,6 @@ export default function Attendance() {
     formData.append("labels", JSON.stringify(selectedLabels));
     formData.append("owner_id", userData.account_id);
     const toastId = toast.loading("Mengubah data");
-
-    console.log(typeof fileGroupRef.current);
 
     try {
       if (
@@ -379,7 +379,7 @@ export default function Attendance() {
     ) {
       formData.append("image", fileGroupRef.current as unknown as File);
     }
-    const toastId = toast.loading("Uploading data");
+    const toastId = toast.loading("Menyimpan data");
 
     try {
       const response = await apiClient.post(
@@ -419,7 +419,7 @@ export default function Attendance() {
     const userData = JSON.parse(localStorage.getItem("user_details") || "{}");
 
     if (!userData.account_id) {
-      toast.error("Couldn't find your account. Please authorize yourself");
+      toast.error("Akun tidak ditemukan, silahkan login terlebih dahulu");
       return null;
     } else {
       return userData;
@@ -438,9 +438,7 @@ export default function Attendance() {
     setShowModal("update-group-modal");
     setUpdateGroupFormVal(group);
     if (group) {
-      setImageGroupPreview(
-        `https://zoomserver-production.up.railway.app/uploads/${group.image}`
-      );
+      setImageGroupPreview(`${BASE_URL}/uploads/${group.image}`);
       setGroupName(group.name);
       setSelectedLabels(group.members);
     }
@@ -450,9 +448,7 @@ export default function Attendance() {
     setShowModal("update-label-modal");
     setUpdateLabelFormVal(label);
     if (label) {
-      setImagePreview(
-        `https://zoomserver-production.up.railway.app/uploads/${label.image}`
-      );
+      setImagePreview(`${BASE_URL}/uploads/${label.image}`);
       setName(label.name);
     }
   }
@@ -488,7 +484,7 @@ export default function Attendance() {
           <h3>Daftar Label</h3>
           <div className="flex items-center gap-6">
             <button
-              className="rounded-md bg-blue-600 px-3 py-1.5"
+              className="rounded-md bg-violet-500 px-3 py-1.5"
               onClick={() => {
                 setShowModal("create-label-modal");
               }}
@@ -505,7 +501,7 @@ export default function Attendance() {
                 }}
               />
               <button
-                className="rounded-md bg-blue-600 px-3 py-1 text-white"
+                className="rounded-md bg-violet-500 px-3 py-1 text-white"
                 onClick={handleLabelSearch}
               >
                 Cari
@@ -529,7 +525,7 @@ export default function Attendance() {
                 <td className="p-4">{attendance.name}</td>
                 <td className="p-2">
                   <Image
-                    src={`https://zoomserver-production.up.railway.app/uploads/${attendance.image}`}
+                    src={`${BASE_URL}/uploads/${attendance.image}`}
                     width={100}
                     height={100}
                     alt="user profile"
@@ -539,7 +535,7 @@ export default function Attendance() {
                 <td>
                   <div className="flex items-center gap-3">
                     <button
-                      className="rounded-md bg-blue-600 px-4 py-1.5"
+                      className="rounded-md bg-emerald-500 px-4 py-1.5"
                       onClick={() => showUpdateLabelForm(attendance)}
                     >
                       Ubah
@@ -565,7 +561,7 @@ export default function Attendance() {
           <h3>Daftar Grup Label</h3>
           <div className="flex items-center gap-6">
             <button
-              className="rounded-md bg-blue-600 px-3 py-1.5"
+              className="rounded-md bg-violet-500 px-3 py-1.5"
               onClick={() => {
                 setShowModal("create-group-modal");
                 getLabels("");
@@ -583,7 +579,7 @@ export default function Attendance() {
                 }}
               />
               <button
-                className="rounded-md bg-blue-600 px-3 py-1 text-white"
+                className="rounded-md bg-violet-500 px-3 py-1 text-white"
                 onClick={handleGroupSearch}
               >
                 Cari
@@ -607,7 +603,7 @@ export default function Attendance() {
                 <td className="p-4">{group.name}</td>
                 <td className="p-2">
                   <Image
-                    src={`https://zoomserver-production.up.railway.app/uploads/${group.image}`}
+                    src={`${BASE_URL}/uploads/${group.image}`}
                     width={100}
                     height={100}
                     alt="group profile"
@@ -617,7 +613,7 @@ export default function Attendance() {
                 <td>
                   <div className="flex items-center gap-3">
                     <button
-                      className="rounded-md bg-blue-600 px-4 py-1.5"
+                      className="rounded-md bg-emerald-500 px-4 py-1.5"
                       onClick={() => showUpdateGroupForm(group)}
                     >
                       Ubah
@@ -759,7 +755,7 @@ export default function Attendance() {
                   }}
                 />
                 <button
-                  className="rounded-md bg-blue-600 px-3 py-1.5 text-white"
+                  className="rounded-md bg-violet-500 px-3 py-1.5 text-white"
                   onClick={handleLabelSearch}
                 >
                   Cari Label
@@ -780,7 +776,7 @@ export default function Attendance() {
                   <Image
                     width={50}
                     height={50}
-                    src={`https://zoomserver-production.up.railway.app/uploads/${label.image}`}
+                    src={`${BASE_URL}/uploads/${label.image}`}
                     alt="person profile"
                     className="aspect-square h-auto w-10 rounded-md object-cover"
                   />

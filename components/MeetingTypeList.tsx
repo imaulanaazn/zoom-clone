@@ -10,14 +10,16 @@ import MeetingModal from "./MeetingModal";
 import ReactDatePicker from "react-datepicker";
 import { Input } from "./ui/input";
 import axios from "axios";
-import { IMeeting } from "@/lib/interface";
 import { toast } from "react-toastify";
 import { apiClient } from "@/lib/utils";
 import Image from "next/image";
-import { ILabelGroup } from "@/interface";
+import { ILabelGroup, IMeeting } from "@/interface";
 
 // ZoomMtg.preLoadWasm();
 // ZoomMtg.prepareWebSDK();
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL;
 
 const initialValuesJoinMeet = {
   meetingId: "",
@@ -34,7 +36,7 @@ const initialValuesScheduledMeet = {
 };
 
 function getCustomRedirectUrl(meetingNumber: number, meetingPwd: string) {
-  return `https://convin-online.vercel.app//meeting/${meetingNumber}?pwd=${meetingPwd}`;
+  return `${FRONTEND_URL}/meeting/${meetingNumber}?pwd=${meetingPwd}`;
 }
 
 const MeetingTypeList = () => {
@@ -57,10 +59,10 @@ const MeetingTypeList = () => {
     const accessToken =
       zoomToken && zoomToken.accessToken ? zoomToken.accessToken : "";
 
-    const toastId = toast.loading("Creating schedule");
+    const toastId = toast.loading("Sedang membuat jadwal meeting");
     try {
       const response = await axios.post(
-        "https://zoomserver-production.up.railway.app/api/v1/users/me/meetings",
+        `${BASE_URL}/api/v1/users/me/meetings`,
         {
           topic: scheduledMeetingVal.topic,
           type: 2,
@@ -95,7 +97,7 @@ const MeetingTypeList = () => {
       setScheduledMeetingVal(initialValuesScheduledMeet);
       toast.update(toastId, {
         type: "success",
-        render: "Meeting scheduled",
+        render: "Jadwal meeting dibuat",
         isLoading: false,
         autoClose: 3000,
       });
@@ -103,7 +105,7 @@ const MeetingTypeList = () => {
     } catch (error: any) {
       toast.update(toastId, {
         type: "error",
-        render: error.response.data.error || "Gagal membuat meeting",
+        render: error.response.data.error || "Gagal membuat jadwal meeting",
         isLoading: false,
         autoClose: 3000,
       });
@@ -119,7 +121,7 @@ const MeetingTypeList = () => {
 
     try {
       const response = await axios.post(
-        "https://zoomserver-production.up.railway.app/api/v1/users/me/meetings",
+        `${BASE_URL}/api/v1/users/me/meetings`,
         { topic: "New Meeting", type: 1 },
         {
           headers: {
@@ -138,7 +140,7 @@ const MeetingTypeList = () => {
   }
 
   async function startInstantMeeting() {
-    const toastId = toast.loading("Creating new meeting");
+    const toastId = toast.loading("Membuat meeting baru");
     try {
       const meeting = await createInstantMeeting();
       if (!meeting || !meeting.id || !meeting.start_url) {
@@ -157,7 +159,7 @@ const MeetingTypeList = () => {
 
       toast.update(toastId, {
         type: "success",
-        render: "Meeting created",
+        render: "Meeting berhasil dibuat",
         isLoading: false,
         autoClose: 3000,
       });
@@ -225,7 +227,7 @@ const MeetingTypeList = () => {
     const userData = JSON.parse(localStorage.getItem("user_details") || "{}");
 
     if (!userData.account_id) {
-      toast.error("Couldn't find your account. Please authorize yourself");
+      toast.error("Akun tidak ditemukan, mohon login ulang");
       return;
     }
 
@@ -254,8 +256,8 @@ const MeetingTypeList = () => {
     <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
       <HomeCard
         img="/icons/add-meeting.svg"
-        title="New Meeting"
-        description="Start an instant meeting"
+        title="Meeting Baru"
+        description="Mulai meeting instan"
         handleClick={() => {
           setMeetingState("isInstantMeeting");
           getLabelGroups("");
@@ -264,25 +266,18 @@ const MeetingTypeList = () => {
       />
       <HomeCard
         img="/icons/join-meeting.svg"
-        title="Join Meeting"
-        description="via invitation link"
+        title="Bergabung kedalam meeting"
+        description="Menggunakan id meeting"
         className="bg-blue-1"
         handleClick={() => setMeetingState("isJoiningMeeting")}
       />
       <HomeCard
         img="/icons/schedule.svg"
-        title="Schedule Meeting"
-        description="Plan your meeting"
+        title="Buat jadwal meeting"
+        description="Rencanakan meeting"
         className="bg-purple-1"
         handleClick={() => setMeetingState("isScheduleMeeting")}
       />
-      {/* <HomeCard
-        img="/icons/recordings.svg"
-        title="View Recordings"
-        description="Meeting Recordings"
-        className="bg-yellow-1"
-        handleClick={() => router.push('/recordings')}
-      /> */}
 
       {!meetingDetail ? (
         <MeetingModal
@@ -291,8 +286,8 @@ const MeetingTypeList = () => {
             setMeetingState(undefined);
             // setCbWithRecognition(false);
           }}
-          title="Schedule a Meeting"
-          buttonText={"Select Attendances"}
+          title="Jadwalkan Meeting"
+          buttonText={"Pilih label grup"}
           handleClick={() => {
             getLabelGroups("");
             setShowAttendanceForm(true);
@@ -300,7 +295,7 @@ const MeetingTypeList = () => {
         >
           <div className="flex flex-col gap-2.5">
             <label className="text-base font-normal leading-[22.4px] text-sky-2">
-              Add a Topic
+              Topik Meeting
             </label>
             <Input
               className="border-none bg-dark-3 focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -314,7 +309,7 @@ const MeetingTypeList = () => {
           </div>
           <div className="flex w-full flex-col gap-2.5">
             <label className="text-base font-normal leading-[22.4px] text-sky-2">
-              Select Start Date and Time
+              Waktu Meeting Dimulai
             </label>
             <ReactDatePicker
               selected={scheduledMeetingVal.startTime}
@@ -335,7 +330,7 @@ const MeetingTypeList = () => {
 
           <div className="flex w-full flex-col gap-2.5">
             <label className="text-base font-normal leading-[22.4px] text-sky-2">
-              Select Meeting Duration
+              Durasi Meeting
             </label>
             <div className="flex gap-4">
               <select
@@ -353,31 +348,31 @@ const MeetingTypeList = () => {
                   });
                 }}
               >
-                <option value="0">0 hour</option>
-                <option value="1">1 hour</option>
-                <option value="2">2 hour</option>
-                <option value="3">3 hour</option>
-                <option value="4">4 hour</option>
-                <option value="5">5 hour</option>
-                <option value="6">6 hour</option>
-                <option value="7">7 hour</option>
-                <option value="8">8 hour</option>
-                <option value="9">9 hour</option>
-                <option value="10">10 hour</option>
-                <option value="11">11 hour</option>
-                <option value="12">12 hour</option>
-                <option value="13">13 hour</option>
-                <option value="14">14 hour</option>
-                <option value="15">15 hour</option>
-                <option value="16">16 hour</option>
-                <option value="17">17 hour</option>
-                <option value="18">18 hour</option>
-                <option value="19">19 hour</option>
-                <option value="20">20 hour</option>
-                <option value="21">21 hour</option>
-                <option value="22">22 hour</option>
-                <option value="23">23 hour</option>
-                <option value="24">24 hour</option>
+                <option value="0">0 jam</option>
+                <option value="1">1 jam</option>
+                <option value="2">2 jam</option>
+                <option value="3">3 jam</option>
+                <option value="4">4 jam</option>
+                <option value="5">5 jam</option>
+                <option value="6">6 jam</option>
+                <option value="7">7 jam</option>
+                <option value="8">8 jam</option>
+                <option value="9">9 jam</option>
+                <option value="10">10 jam</option>
+                <option value="11">11 jam</option>
+                <option value="12">12 jam</option>
+                <option value="13">13 jam</option>
+                <option value="14">14 jam</option>
+                <option value="15">15 jam</option>
+                <option value="16">16 jam</option>
+                <option value="17">17 jam</option>
+                <option value="18">18 jam</option>
+                <option value="19">19 jam</option>
+                <option value="20">20 jam</option>
+                <option value="21">21 jam</option>
+                <option value="22">22 jam</option>
+                <option value="23">23 jam</option>
+                <option value="24">24 jam</option>
               </select>
               <select
                 defaultValue={1}
@@ -394,10 +389,10 @@ const MeetingTypeList = () => {
                   });
                 }}
               >
-                <option value="0">0 minute</option>
-                <option value="15">15 minute</option>
-                <option value="30">30 minute</option>
-                <option value="45">45 minute</option>
+                <option value="0">0 menit</option>
+                <option value="15">15 menit</option>
+                <option value="30">30 menit</option>
+                <option value="45">45 menit</option>
               </select>
             </div>
             {/* <div className="flex items-center gap-2">
@@ -429,9 +424,9 @@ const MeetingTypeList = () => {
           title="Meeting Created"
           handleClick={() => {
             navigator.clipboard.writeText(
-              `https://convin-online.vercel.app//meeting/${meetingDetail?.id}?pwd=${meetingDetail.encrypted_password}`
+              `${BASE_URL}/meeting/${meetingDetail?.id}?pwd=${meetingDetail.encrypted_password}`
             );
-            toast.success("Link Copied");
+            toast.success("Tautan disalin");
           }}
           image={"/icons/checked.svg"}
           buttonIcon="/icons/copy.svg"
@@ -443,15 +438,15 @@ const MeetingTypeList = () => {
       <MeetingModal
         isOpen={meetingState === "isJoiningMeeting"}
         onClose={() => setMeetingState(undefined)}
-        title="Type the link here"
+        title="Masukkan id dan password meeting"
         className="text-center"
-        buttonText="Join Meeting"
+        buttonText="Bergabung kedalam meeting"
         handleClick={() => {
           if (!joinMeetValues.meetingId || !joinMeetValues.meetingPwd) {
-            toast.error("Please provide meeting id and meeting password");
+            toast.error("Tolong massukkan id dan password meeting");
           } else {
             router.push(
-              `https://convin-online.vercel.app//meeting/${joinMeetValues.meetingId}?pwd=${joinMeetValues.meetingPwd}`
+              `${BASE_URL}/meeting/${joinMeetValues.meetingId}?pwd=${joinMeetValues.meetingPwd}`
             );
           }
         }}
@@ -515,14 +510,14 @@ const MeetingTypeList = () => {
           }}
           title={
             meetingState === "isInstantMeeting"
-              ? "Start an Instant Meeting"
-              : "Schedule a Meeting"
+              ? "Mulai meeting instan"
+              : "Jadwalkan meeting"
           }
           className="text-center"
           buttonText={
             meetingState === "isInstantMeeting"
-              ? "Start Meeting"
-              : "Schedule Meeting"
+              ? "Mulai Meeting"
+              : "Jadwalkan Meeting"
           }
           handleClick={() => {
             meetingState === "isInstantMeeting"
@@ -530,7 +525,7 @@ const MeetingTypeList = () => {
               : createScheduledMeeting();
           }}
         >
-          <p>Please select attendance group to be recognise</p>
+          <p>Pilih label grup untuk dideteksi</p>
           <div className="flex items-center gap-2">
             <input
               type="text"
@@ -541,10 +536,10 @@ const MeetingTypeList = () => {
               }}
             />
             <button
-              className="rounded-md bg-blue-600 px-3 py-1.5 text-white"
+              className="rounded-md bg-violet-500 px-3 py-1.5 text-white"
               onClick={handleSearch}
             >
-              Search
+              Cari Grup
             </button>
           </div>
           <div className="h-96 overflow-y-auto">
@@ -561,7 +556,7 @@ const MeetingTypeList = () => {
                 <Image
                   width={50}
                   height={50}
-                  src={`https://zoomserver-production.up.railway.app/uploads/${labelGroup.image}`}
+                  src={`${BASE_URL}/uploads/${labelGroup.image}`}
                   alt="person profile"
                   className="aspect-square h-auto w-10 rounded-md object-cover"
                 />

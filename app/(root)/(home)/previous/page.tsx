@@ -1,8 +1,10 @@
 "use client";
 import MeetingCard from "@/components/MeetingCard";
-import { IPastMeeting } from "@/lib/interface";
+import { IPastMeeting } from "@/interface";
 import { apiClient } from "@/lib/utils";
 import { useEffect, useState } from "react";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const PreviousPage = () => {
   const [meetings, setMeetings] = useState<IPastMeeting[]>([]);
@@ -11,7 +13,7 @@ const PreviousPage = () => {
     async function getMeetings() {
       try {
         const response = await apiClient.get(
-          "https://zoomserver-production.up.railway.app/api/v1/users/me/meetings/history",
+          `${BASE_URL}/api/v1/users/me/meetings/history`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -31,7 +33,7 @@ const PreviousPage = () => {
   }, []);
   return (
     <section className="flex size-full flex-col gap-10 text-white">
-      <h1 className="text-3xl font-bold">Previous Meeting</h1>
+      <h1 className="text-3xl font-bold">Meeting Sebelumnya</h1>
 
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
         {meetings && meetings.length > 0 ? (
@@ -40,12 +42,12 @@ const PreviousPage = () => {
               key={meeting.id}
               isPreviousMeeting={true}
               icon={"/icons/previous.svg"}
-              title={meeting.topic || "No Description"}
+              title={meeting.topic || "Tidak ada deskripsi"}
               date={
                 new Date(meeting.started_at).toLocaleDateString() ||
                 new Date().getDate().toLocaleString()
               }
-              link={`https://convin-online.vercel.app//meeting/${meeting.id}?pwd=${meeting.encrypted_password}`}
+              link={`${BASE_URL}/meeting/${meeting.id}?pwd=${meeting.encrypted_password}`}
               buttonIcon1={undefined}
               buttonText={""}
               handleClick={() => {}}
@@ -54,7 +56,7 @@ const PreviousPage = () => {
           ))
         ) : (
           <h1 className="text-2xl font-bold text-white">
-            {"No Meeting Found"}
+            {"Tidak ada meeting"}
           </h1>
         )}
       </div>

@@ -1,10 +1,12 @@
 "use client";
-import { IDetection, IPastMeeting } from "@/lib/interface";
+import { IDetection, IPastMeeting } from "@/interface";
 import { apiClient } from "@/lib/utils";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export default function MeetingDetails() {
   const [meeting, setMeeting] = useState<IPastMeeting>();
@@ -33,7 +35,7 @@ export default function MeetingDetails() {
     async function getMeetings() {
       try {
         const response = await apiClient.get(
-          `https://zoomserver-production.up.railway.app/api/v1/users/me/meetings/history/${meetingId}`,
+          `${BASE_URL}/api/v1/users/me/meetings/history/${meetingId}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -86,7 +88,7 @@ export default function MeetingDetails() {
               }}
             />
             <button
-              className="rounded-md bg-blue-600 px-3 py-1 text-white"
+              className="rounded-md bg-violet-500 px-3 py-1 text-white"
               // onClick={handleSearch}
             >
               Cari
@@ -105,14 +107,14 @@ export default function MeetingDetails() {
           <tbody>
             {detections.map((detection) => (
               <tr
-                key={detection.attendance_id}
-                className="border-b hover:bg-gray-50"
+                key={detection.label_id}
+                className="border-b hover:bg-gray-800"
               >
-                <td className="p-4">{detection.attendance_id}</td>
+                <td className="p-4">{detection.label_id}</td>
                 <td className="p-4">{detection.name}</td>
                 <td className="p-2">
                   <Image
-                    src={`https://zoomserver-production.up.railway.app/uploads/${detection.image}`}
+                    src={`${BASE_URL}/uploads/${detection.image}`}
                     width={100}
                     height={100}
                     alt="user profile"
@@ -128,7 +130,7 @@ export default function MeetingDetails() {
         </table>
 
         {!detections.length && (
-          <p className="mt-8 text-center">No data were found</p>
+          <p className="mt-8 text-center">Data tidak ditemukan</p>
         )}
       </div>
     </div>

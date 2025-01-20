@@ -3,7 +3,9 @@ import axios from "axios";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import * as faceapi from "face-api.js";
-import { IDetection } from "./interface";
+import { IDetection } from "@/interface";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -20,7 +22,7 @@ export async function refreshAccessToken() {
 
   try {
     const response = await axios.post(
-      "https://zoomserver-production.up.railway.app/api/v1/users/me/oauth/token",
+      `${BASE_URL}/api/v1/users/me/oauth/token`,
       { refresh_token: refreshToken, grant_type: "refresh_token" }
     );
 
